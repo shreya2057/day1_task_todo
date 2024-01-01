@@ -7,3 +7,8 @@ export interface APIResponse{
     status: Number,
     message: string
 }
+
+export interface ReadDataResponse{
+    status: Number,
+    data: object
+}
