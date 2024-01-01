@@ -8,27 +8,59 @@ import {
     FormControl,
     Button,
     Center,
+    Alert,
+    AlertIcon
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import NavBar from "../components/Navbar";
-import { TaskData } from "../types/task";
+import { TaskData, APIResponse } from "../types/types";
 import { create_operation } from "../services/crud";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function CreateTodo(){
     const {register, handleSubmit, formState:{errors}} = useForm<TaskData>(); //The form uses data which is of type TaskData
-
+    const [alertVisible, setVisible] = useState<Boolean>(false);
+    const [alertMessage, setAlertMessage] = useState<string>("");
+    const navigate = useNavigate()
     // create_task -> function with type SubmitHandler<TaskData>
     //             -> parameter type will be TaskData
     // SubmitHandler -> generic type provided by react-hook-form to define 
     //                  signature function to handle form submission.
+
+
     const create_task:SubmitHandler<TaskData> = async(formData)=>{
-        console.log(formData);
-        const response = await create_operation(formData);
-        console.log(response);
+        const resonse: APIResponse = await create_operation(formData);
+        if(resonse.status===201){
+            setVisible(true);
+            setAlertMessage(resonse.message);
+            setTimeout(()=>{
+                setVisible(false);
+                setAlertMessage("");
+                navigate('/');
+            }, 2000);
+        } else{
+            setVisible(true);
+            setAlertMessage(resonse.message);
+            setTimeout(()=>{
+                setVisible(false);
+                setAlertMessage("");
+            }, 2000);
+        }
     }
+
     return(
         <Flex width={"100vw"} h={"100vh"} direction={"column"}>
             <NavBar/>
+            {
+                alertVisible 
+                &&  
+                <Alert status='success'>
+                    <AlertIcon />
+                    {alertMessage}
+                </Alert>
+            }
+           
             <Flex p={10} width={"100%"} h={"100%"} justify={"center"} align={"center"}> 
                 <Box bgColor={"white"} px={12} py={10} h={"min-content"} borderWidth={"thin"} borderRadius={"md"} borderColor={"#cbd5e1"} shadow={"lg"}>
                     <Heading size={"lg"} textColor={"#1f2937"}>Create todo</Heading>
