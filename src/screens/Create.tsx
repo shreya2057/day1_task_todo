@@ -9,7 +9,8 @@ import {
     Button,
     Center,
     Alert,
-    AlertIcon
+    AlertIcon,
+    useBreakpointValue
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import NavBar from "../components/Navbar";
@@ -22,7 +23,9 @@ function CreateTodo(){
     const {register, handleSubmit, formState:{errors}} = useForm<TaskData>(); //The form uses data which is of type TaskData
     const [alertVisible, setVisible] = useState<Boolean>(false);
     const [alertMessage, setAlertMessage] = useState<string>("");
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const textFieldWidth = useBreakpointValue({"sm": 200, "base": 300, "md":400});
+    const textFieldPaddingHorizontal = useBreakpointValue({"sm":5, "base": 5, "md": 12})
     // create_task -> function with type SubmitHandler<TaskData>
     //             -> parameter type will be TaskData
     // SubmitHandler -> generic type provided by react-hook-form to define 
@@ -62,13 +65,13 @@ function CreateTodo(){
             }
            
             <Flex p={10} width={"100%"} h={"100%"} justify={"center"} align={"center"}> 
-                <Box bgColor={"white"} px={12} py={10} h={"min-content"} borderWidth={"thin"} borderRadius={"md"} borderColor={"#cbd5e1"} shadow={"lg"}>
+                <Box bgColor={"white"} px={textFieldPaddingHorizontal} py={10} h={"min-content"} borderWidth={"thin"} borderRadius={"md"} borderColor={"#cbd5e1"} shadow={"lg"}>
                     <Heading size={"lg"} textColor={"#1f2937"}>Create todo</Heading>
                     <form onSubmit={handleSubmit(create_task)}>
                         <FormControl marginY={5} isInvalid={!!errors.taskName}>
                             <FormLabel htmlFor="task" textColor={"#1f2937"}>Task</FormLabel>
                             <Input 
-                                width={400} 
+                                width={textFieldWidth} 
                                 id="task" 
                                 placeholder="Enter your task" 
                                 type="text"
@@ -92,7 +95,7 @@ function CreateTodo(){
                         <FormControl marginY={5} isInvalid={!!errors.date}>
                             <FormLabel htmlFor="task" textColor={"#1f2937"}>Task</FormLabel>
                             <Input 
-                                width={400} 
+                                width={textFieldWidth} 
                                 id="task" 
                                 placeholder="Enter your task" 
                                 type="date"
